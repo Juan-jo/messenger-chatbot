@@ -9,7 +9,7 @@
 
 'use strict'
 
-//Importamos dependecias y agregamos e importamos dependecias
+//Importamos dependecias 
 const request    = require('request'),
       express    = require('express'),
       bodyParser = require('body-parser'),
