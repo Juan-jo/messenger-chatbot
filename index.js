@@ -9,7 +9,7 @@
 
 'use strict'
 
-//Importamos dependecias 
+//Importamos dependecias
 const request    = require('request'),
       express    = require('express'),
       bodyParser = require('body-parser'),
@@ -79,11 +79,13 @@ function handleMessage(sender_psid, received_message) {
 
   //Verifica que el mensage contenga texto
   if(received_message.text){
-    response = {
-      "text": `Hola, tu mensaje fue: "${received_message.text}"`
-    }
+    getFirstName(sender_psid, function(first_name) {
+      response = {
+        "text": `Hola ` + first_name + `, tu mensaje fue: "${received_message.text}"`
+      }
+      callSendAPI(sender_psid, response);
+    });
   }
-  callSendAPI(sender_psid, response);
 }
 
 // Funcion para responder
@@ -108,6 +110,32 @@ function callSendAPI(sender_psid, response){
       console.log('mensaje enviado!');
     } else{
       console.log('El mensaje NO se envio');
+    }
+  });
+}
+
+
+// Funcion para traer first_name
+function getFirstName(sender_psid, callback) {
+  request({
+    url: "https://graph.facebook.com/v2.6/" + sender_psid + "?",
+    qs: {
+      access_token: PAGE_ACCESS_TOKEN
+    },
+    headers: {
+      'Accept': 'application/json',
+      'Accept-Charset': 'utf-8',
+      'User-Agent': 'test-bot'
+    },
+    method: "GET",
+    json: true,
+    time:true
+  }, function(err, res, faceUserInfo) {
+    if(!err) {
+      callback(faceUserInfo.first_name);
+    }
+    else{
+      callback(" :( ")
     }
   });
 }
