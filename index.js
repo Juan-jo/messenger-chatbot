@@ -15,7 +15,7 @@ const request    = require('request'),
       bodyParser = require('body-parser'),
       app        = express().use(bodyParser.json());
 
-const PAGE_ACCESS_TOKEN = "EAAeV0gqRVg0BAOOIsBCoWi7znRslWSz6M0DkdTpu1SmsUtW2uZCQfMHwcZBAD1pZCWbd7cvX8jPdTwapvfRynJ9e32w0FgZCrqBZBsjUxvVflDeQMvJlVWkeCBuIajXpKj9nXsV0fyFW7jG42jvd4aq2fErI8ZCD9fK1WknAMN5QZDZD";
+const PAGE_ACCESS_TOKEN = "Tu token";
 
 //Asigna un puerto al servidor y registra un mensaje en la consola en caso de exito
 app.listen(process.env.PORT || 80, () => console.log('El webhook esta escuchando'));
@@ -23,7 +23,7 @@ app.listen(process.env.PORT || 80, () => console.log('El webhook esta escuchando
 app.get('/webhook', function(req, res) {
 
   /** CONST PARA VERIFICACION DE TOKEN **/
-  const VERIFY_TOKEN = "EAAeV0gqRVg0BAOOIsBCoWi7znRslWSz6M0DkdTpu1SmsUtW2uZCQfMHwcZBAD1pZCWbd7cvX8jPdTwapvfRynJ9e32w0FgZCrqBZBsjUxvVflDeQMvJlVWkeCBuIajXpKj9nXsV0fyFW7jG42jvd4aq2fErI8ZCD9fK1WknAMN5QZDZD";
+  const VERIFY_TOKEN = "Tu token otra vez";
 
   // Parametros de la solicitud de verificación de webhook
   let mode = req.query['hub.mode'];
@@ -89,7 +89,7 @@ function handleMessage(sender_psid, received_message) {
 // Funcion para responder
 function callSendAPI(sender_psid, response){
 
-  //Constrimos el mensaje
+  //Construimos el mensaje
   let request_body = {
     "recipient": {
       "id": sender_psid
