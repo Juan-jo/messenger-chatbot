@@ -1,0 +1,23 @@
+{
+  "name": "messenger-webhook",
+  "version": "1.0.0",
+  "description": "ChatBot Messenger",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Juan-jo/messenger-chatbot.git"
+  },
+  "author": "JoanJo HM",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Juan-jo/messenger-chatbot/issues"
+  },
+  "homepage": "https://github.com/Juan-jo/messenger-chatbot#readme",
+  "dependencies": {
+    "express": "^4.16.4",
+    "request": "^2.88.0"
+  }
+}
