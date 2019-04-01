@@ -15,15 +15,12 @@ const request    = require('request'),
       bodyParser = require('body-parser'),
       app        = express().use(bodyParser.json());
 
-const PAGE_ACCESS_TOKEN = "Tu token";
+const PAGE_ACCESS_TOKEN = "EAAeV0gqRVg0BANozuK4EphSq2uhJJ81Yetxc3vgg1JqpAmQAZBsdwW6yV9mXMbWPUUGZCpmhmzrixJKTTuLLCDCTAZAZA11UrsSjVrOdSEeKpsIwWrWfzUQ719tYVupTqkJNA3UUdJ99zXc7PRY0a9PDjsqInFUa5HQnI6NdggZDZD";
 
 //Asigna un puerto al servidor y registra un mensaje en la consola en caso de exito
 app.listen(process.env.PORT || 80, () => console.log('El webhook esta escuchando'));
 
 app.get('/webhook', function(req, res) {
-
-  /** CONST PARA VERIFICACION DE TOKEN **/
-  const VERIFY_TOKEN = "Tu token otra vez";
 
   // Parametros de la solicitud de verificación de webhook
   let mode = req.query['hub.mode'];
@@ -34,7 +31,7 @@ app.get('/webhook', function(req, res) {
   if (mode && token) {
 
     // Check the mode and token sent are correct
-    if (mode === 'subscribe' && token === VERIFY_TOKEN) {
+    if (mode === 'subscribe' && token === PAGE_ACCESS_TOKEN ) {
 
       // Respuesta 200 exitosa
       console.log('WEBHOOK_VERIFIED');
@@ -68,6 +65,9 @@ app.post('/webhook', function(req, res) {
       if(webhook_event.message){
         handleMessage(sender_psid, webhook_event.message);
       }
+      else if (webhook_event.postback) {
+        handlePostback(sender_psid, webhook_event.postback);
+      }
     });
     //Devuelve una respuesta '200 ok' a todas las solicitudes
     res.status(200).send('EVENT_RECEIVED');
@@ -81,11 +81,57 @@ function handleMessage(sender_psid, received_message) {
   if(received_message.text){
     getFirstName(sender_psid, function(first_name) {
       response = {
-        "text": `Hola ` + first_name + `, tu mensaje fue: "${received_message.text}"`
+        "text": `Hola ` + first_name + `, tu mensaje fue: "${received_message.text}", ahora enviame una foto`
       }
       callSendAPI(sender_psid, response);
     });
   }
+  else if(received_message.attachments){
+
+    // Traemos la url de la imagen que recibimos
+    let attachment_url = received_message.attachments[0].payload.url;
+    response = {
+      "attachment": {
+        "type": "template",
+        "payload": {
+          "template_type": "generic",
+          "elements": [{
+            "title": "Tu imagen",
+            "subtitle": "¿Es lo que enviaste?",
+            "image_url": attachment_url,
+            "buttons":[
+              {
+                "type": "postback",
+                "title": "Si",
+                "payload": "si"
+              },
+              {
+                "type": "postback",
+                "title": "No",
+                "payload": "no"
+              }
+            ]
+          }]
+        }
+      }
+    }
+    callSendAPI(sender_psid, response);
+  }
+}
+
+function handlePostback(sender_psid, received_postback){
+  let response;
+
+  let payload = received_postback.payload;
+
+  // Set the response based on the postback payload
+  if (payload === 'si') {
+    response = { "text": "Gracias por confirmar!" }
+  } else if (payload === 'no') {
+    response = { "text": "Ops, algo salio mal" }
+  }
+  // Send the message to acknowledge the postback
+  callSendAPI(sender_psid, response);
 }
 
 // Funcion para responder
